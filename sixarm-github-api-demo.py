@@ -12,9 +12,29 @@
 #     $ GITHUB_PERSONAL_ACCESS_TOKEN=fe7f2bf4057de85eb638dc7356047b0e31d24a4b \
 #       sixarm-github-api-issues-data.py
 #
-# Documentation:
 #
-#    * https://pygithub.readthedocs.io/en/latest/introduction.html
+# ## Introduction
+#
+# GitHub technical info:
+#
+#   * API: https://developer.github.com/v3/
+#
+#   * PyGitHub: https://pygithub.readthedocs.io/en/latest/introduction.html
+#
+#
+# ## Setup
+#
+# To generate your own GitHub personal access token:
+#
+#   * Got to GitHub https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+#   * Sign in as usual
+#   * In the upper-right corner of any page, click your profile photo, then click Settings.
+#   * In the left sidebar, click Developer settings.
+#   * In the left sidebar, click Personal access tokens.
+#   * Click Generate new token.
+#   * Give your token a descriptive name.
+#   * Select scopes; to use your token to access repositories from the command line, select repo.
+#   * Click Generate token.
 #
 #
 # ## Dependencies
@@ -30,7 +50,7 @@
 #
 # If you get the error message:
 #
-#.    ModuleNotFoundError: No module named 'github'
+#     ModuleNotFoundError: No module named 'github'
 #
 # Then try installing using a specific python instance:
 #
