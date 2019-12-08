@@ -9,8 +9,11 @@
 # 
 # Example:
 #
-#     $ GITHUB_PERSONAL_ACCESS_TOKEN=fe7f2bf4057de85eb638dc7356047b0e31d24a4b \
-#       sixarm-github-api-issues-data.py
+#     $ export GITHUB_PERSONAL_ACCESS_TOKEN=fe7f2bf4057de85eb638dc7356047b0e31d24a4b
+#     $ sixarm-github-api-issues-data.py
+#     => print a list of all repos
+#     $ sixarm-github-api-issues-data.py alpha/bravo
+#     => print the issues for the "alpha" owner "bravo" repo.
 #
 #
 # ## Introduction
@@ -39,14 +42,21 @@
 #
 # ## Dependencies
 #
-# This script uses `pygithub`.
+# This script uses `PyGithub`.
 #
 # Install:
 #
-#     $ pip install pygithub
-#
+#     $ pip install --upgrade PyGithub
 #
 # ## Troubleshooting
+#
+# If you get the error message:
+#
+#     No module named pip
+#
+# Then install pip:
+#
+#     $ easy_install pip
 #
 # If you get the error message:
 #
@@ -56,6 +66,28 @@
 #
 #     $ python3 -m pip install --upgrade pip
 #     $ python3 -m pip install pygithub
+#
+# If you are using macOS and python 3, 
+# and get the error message:
+#
+#     $ pip3 
+#     Traceback (most recent call last):
+#     File "/Library/Developer/CommandLineTools/usr/bin/pip3", line 10, in <module>
+#     sys.exit(main())
+#     TypeError: 'module' object is not callable
+#
+# Then try uninstalling pip:
+#
+#     $ python3 -m pip install --upgrade pip
+#
+# If you are using macOS Catalina, python 3.7, and pip3, and
+# you get an error message that shows pip3 is aborting, then
+# see: https://github.com/Homebrew/homebrew-core/issues/44996
+#
+# And try this:
+#
+#     $ rm -rf python3.7/site-packages/asn1crypto
+#     $ pip3 install asn1crypto
 #
 # ## GitHub Enterprise
 #
@@ -103,8 +135,19 @@ def show_repo(github_owner_repo):
 
 def show_repo_issues(github_owner_repo):
     repo = GITHUB_CLIENT.get_repo(github_owner_repo)
+    for issue in repo.get_issues(state='all'):
+        print(issue_as_update_log_tsv(github_owner_repo, issue))
+
+def issue_as_summary(github_owner_repo, issue):
+    return f"{github_owner_repo} issue {issue.number} {issue.state} {issue.title}"
+
+def issue_as_update_log_tsv(github_owner_repo, issue):
+    return f"{issue.updated_at}\t{issue.url}\t{issue.state}\t{issue.title}"
+
+def show_repo_issues_as_summary(github_owner_repo):
+    repo = GITHUB_CLIENT.get_repo(github_owner_repo)
     for issue in repo.get_issues():
-        print(f"{github_owner_repo} issue title:{issue.title}")
+        print(f"{github_owner_repo} issue {issue.updated_at} {issue.number} {issue.state} {issue.title} ")
 
 def show_repo_labels(github_owner_repo):
     repo = GITHUB_CLIENT.get_repo(github_owner_repo)
@@ -114,11 +157,10 @@ def show_repo_labels(github_owner_repo):
 GITHUB_CLIENT = github_client()
 
 def main():
-    print("GitHub API demo")
-    #show_repos()
-    if len(sys.argv) > 1:
+    if len(sys.argv) <= 1:
+        show_repos()
+    else:
         github_owner_repo = sys.argv[1]
-        print (f"github owner/repo:{github_owner_repo}")
         show_repo_issues(github_owner_repo)
   
 if __name__== "__main__":
